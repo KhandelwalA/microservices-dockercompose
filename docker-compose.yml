@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+    # Mongo db container for utility microservice
+    mongo-utility: 
+        image: mongo:3.6
+        container_name: mongo-utility
+        ports:
+                - "27017:27017"
+    
+    # Utility microservice container
+    utility:
+        image: utility-service:v1
+        ports:
+                - "9191:8080"
+        links: 
+                - mongo-utility #Linking utility conatiner with mongo-utility db container
+        container_name: utility
+        environment:
+                - spring.data.mongodb.uri=mongodb://mongo-utility/asset
+    
+    # Mongo db container for personal microservice
+    mongo-personal: 
+        image: mongo:3.6
+        container_name: mongo-personal
+        ports:
+                - "27018:27017"
+                
+    # Personal microservice container
+    personal:
+        image: personal-service:v1
+        ports:
+                - "9192:8080"
+        links:
+                - mongo-personal  #Linking personal container with mongo-personal db container
+        container_name: personal
+        environment:
+                - spring.data.mongodb.uri=mongodb://mongo-personal/asset
+                
+    # Mongo db container for investment microservice
+    mongo-investment: 
+        image: mongo:3.6
+        container_name: mongo-investment
+        ports:
+                - "27019:27017"
+               
+    # Investment microservice container
+    investment:
+        image: investment-service:v1
+        ports:
+                - "9193:8080"
+        links:
+                - mongo-investment   #Linking investment container with mongo-investment db container
+        container_name: investment
+        environment:
+                - spring.data.mongodb.uri=mongodb://mongo-investment/asset
